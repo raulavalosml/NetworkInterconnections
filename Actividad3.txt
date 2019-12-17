@@ -1,0 +1,72 @@
+%%practica 3%%
+%%router 0%%
+
+enable
+config t
+interface giga 0/1
+ip address 192.168.0.1 255.255.255.0
+no shut
+exit
+//de router 0 a 1
+interface giga 0/0
+ip add 192.168.2.1 255.255.255.252
+no shut
+exit
+&&&&&&&&&& método rip
+router rip
+version 2
+network 192.168.0.0
+network 192.168.2.0
+passive-interface giga 0/1
+&&&&&&&&&& método ospf (usa wildcard en vez de mask)
+router ospf 11 //número que te guste, pero todos los involucrados deben tener ese número
+network 192.168.0.0 0.0.0.255
+network 192.168.2.0 0.0.0.255
+passive-interface giga 0/0
+
+%%router 1%%
+enable
+config t
+interface giga 0/1
+ip address 192.168.2.5 255.255.255.252
+no shut
+exit
+interface giga 0/0
+ip add 192.168.2.2 255.255.255.252
+no shut
+exit
+&&&&&&&&&rip
+router rip
+version 2
+network 192.168.2.0
+network 192.168.2.4
+&&&&&&&&&ospf
+router ospf 11
+network 192.168.0.0 0.0.0.3 area 0
+network 192.168.2.0 0.0.0.3 area 0
+
+%%router 2%%
+enable
+config t
+interface giga 0/1
+ip address 192.168.2.6 255.255.255.252
+no shut
+exit
+interface giga 0/0
+ip add 192.168.1.1 255.255.255.0
+no shut
+exit
+&&&&&&&&&&&rip
+router rip
+version 2
+network 192.168.1.0
+network 192.168.2.4
+passive-interface giga 0/0
+&&&&&&&&&&&&&ospf
+router ospf 11
+network 192.168.1.0 0.0.0.255 area 0 
+network 192.168.2.4 0.0.0.3 area 0
+passive-interface giga 0/0.10
+passive-interface giga 0/0.20
+passive-interface giga 0/0.30
+exit

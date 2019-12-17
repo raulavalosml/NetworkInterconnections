@@ -1,0 +1,51 @@
+%%Treinta solo ve a 13%%
+access_list standard Treinta
+access_list Treinta permit 192.168.3.9 0 0.0.0.0
+access_list Treinta deny any %niega todos los demás accesos en la lista treinta%
+interface giga0/0.30
+ip access_group Doce out
+
+
+%%Trece solo ve a 30%%
+access_list standard Trece
+access_list Trece permit 192.168.3.1 0 0.0.0.0
+access_list Trece deny any %niega todos los demás accesos en la lista trece%
+interface giga0/0.13
+ip access_group Doce out
+
+
+%%Diez no ve a%%
+access_list standard Diez
+access_list Diez deny 192.168.1.0 0.0.0.255 %no ve a 20%
+access_list Diez deny 192.168.3.0 0.0.0.255 %no ve ni 13 ni 30%
+access_list Diez permit any
+interface giga 0/1.10
+ip access-group Diez out
+
+
+%%Veinte no ve a%%
+access_list standard Veinte
+access_list Veinte deny 192.168.0.0 0.0.0.255 %no ve a 10%
+access_list Veinte deny 192.168.2.0 0.0.0.255 %no ve a 11%
+access_list Veinte deny 192.168.3.0 0.0.0.255 %no ve a 13 y 30%
+access_list Veinte permit any %permite todos los demás accesos en la lista veinte%
+interface giga 0/1.20
+ip access-group Veinte out
+
+%%Once no ve a%%
+access_list standard Once
+access_list Once deny 192.168.1.0 0.0.0.255
+access_list Once deny 192.168.3.1 0.0.0.0
+access_list Once deny 192.168.3.9 0.0.0.0
+access_list Once permit any
+interface giga0/0.11
+ip access_group Once out
+
+%%Doce no ve a%%
+access_list standard Doce
+access_list Doce deny 192.168.3.1 0.0.0.0
+access_list Doce deny 192.168.3.9 0.0.0.0
+access_list Doce permit any
+interface giga0/0.12
+ip access_group Doce out
+

@@ -1,0 +1,74 @@
+Ejercicio 2 Packet Tracer
+
+--ROUTER0--
+enable
+config t
+interface giga 0/1
+ip add 192.168.0.1 255.255.255.0
+no shut
+exit
+interface giga 0/0
+ip add 192.168.2.1 255.255.255.252
+no shut
+exit
+---rip---
+router rip
+version 2
+network 192.168.0.0
+network 192.168.2.0
+passive-interface giga 0/1
+
+---ospf---
+router ospf 11
+network 192.168.0.0 0.0.0.255 area 0
+network 192.168.2.0 0.0.0.3 area 0
+passive-interface giga 0/1
+
+
+--ROUTER1--
+enable
+config t
+interface giga 0/1
+ip add 192.168.2.5 255.255.255.252
+no shut
+exit
+interface giga 0/0
+ip add 192.168.2.2 255.255.255.252
+no shut
+exit
+
+---rip---
+router rip
+version 2
+network 192.168.2.0
+network 192.168.2.4
+
+---ospf---
+router ospf 11
+network 192.168.2.4 0.0.0.3 area 0
+network 192.168.2.0 0.0.0.3 area 0
+
+--ROUTER2--
+enable
+config t
+interface giga 0/1
+ip add 192.168.2.6 255.255.255.252
+no shut
+exit
+interface giga 0/0
+ip add 192.168.1.1 255.255.255.0
+no shut
+exit
+
+---rip---
+router rip
+version 2
+network 192.168.1.0
+network 192.168.2.4
+passive-interface giga 0/0
+
+---ospf---
+router ospf 11
+network 192.168.1.0 0.0.0.255 area 0
+network 192.168.2.4 0.0.0.3 area 0
+passive-interface giga 0/0

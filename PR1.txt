@@ -1,0 +1,20 @@
+enable
+config terminal
+interface giga 0/0
+ip add 192.168.0.1 255.255.255.0
+no shut
+exit
+ip dhcp pool RED1
+network 192.168.0.0 255.255.255.0
+default-router 192.168.0.1
+exit
+ip dhcp excluded-address 192.168.0.1
+
+
+//para router
+enable
+config t
+interface giga 0/0
+ip add dhcp
+no shut
+exit

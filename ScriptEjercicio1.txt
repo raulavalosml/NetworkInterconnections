@@ -1,0 +1,35 @@
+
+#######Router0#######
+
+enable
+configure terminal
+interface giga 0/0
+ip add 192.168.0.1 255.255.255.0
+no shutdown
+exit
+interface giga 0/1 
+ip add 10.10.0.1 255.255.255.252
+no shutdown
+exit
+
+ip route 192.168.2.0 255.255.255.0 10.10.0.2
+
+
+#######Router1#######
+enable
+configure terminal
+interface giga 0/1
+ip add 192.168.2.1 255.255.255.0
+no shutdown
+exit
+
+interface serial 0/1/0
+ip add 10.10.0.2 255.255.255.252
+no shutdown
+clock rate 9600
+exit
+
+ip route 192.168.0.0 255.255.255.0 10.10.0.1
+ip route 192.168.1.0 255.255.255.0 10.10.0.1
+
+

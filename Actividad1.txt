@@ -1,0 +1,33 @@
+//Router 2
+
+enable
+config t
+interface giga 0/0
+ip address 192.168.0.1 255.255.255.0
+no shutdown
+exit
+interface giga 0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+interface serial 0/1/0
+ip add 10.10.0.1 255.255.255.252
+no shutdown
+clock rate 9600
+exit
+ip route 192.168.2.0 255.255.255.0 serial 0/1/0
+
+//Router 4
+enable
+config t
+interface giga 0/0
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+interface serial 0/1/0
+ip address 10.10.0.2 255.255.255.252
+no shutdown
+clock rate 9600
+exit
+ip route 192.168.0.0 255.255.255.0 10.10.0.1
+ip route 192.168.1.0 255.255.255.0 10.10.0.1

@@ -1,0 +1,201 @@
+%%%%%ROUTER 2%%%%%%%%
+
+enable
+configure terminal
+interface giga 0/0
+ip add 192.168.67.65 255.255.255.224
+no shutdown
+exit
+
+interface giga 0/1
+ip add 192.168.64.1 255.255.254.0 
+no shutdown
+exit
+
+ip dhcp pool RED1
+network 192.168.67.64 255.255.255.224
+default-router 192.168.67.65
+exit
+
+ip dhcp pool RED3
+network 192.168.64.0 255.255.254.0
+default-router 192.168.64.1
+exit
+
+router ospf 10
+network 192.168.64.0 0.0.1.255 area 0
+network 192.168.67.64 0.0.0.31 area 0
+
+
+%%%%%ROUTER 1%%%%%%%%
+
+enable
+configure terminal
+interface giga 0/0
+ip add 192.168.67.67 255.255.255.224
+no shutdown
+exit
+
+interface giga 0/1.20
+encapsulation dot1Q 20
+ip add 192.168.66.1 255.255.255.128
+exit
+
+interface giga 0/1.21
+encapsulation dot1Q 21
+ip add 192.168.66.129 255.255.255.128 
+exit
+
+interface giga 0/1.22
+encapsulation dot1Q 22
+ip add 192.168.67.1 255.255.255.192
+exit
+
+interface giga 0/1
+no shutdown
+exit
+
+ip dhcp pool RED2
+network 192.168.66.1 255.255.255.128
+default-router 192.168.66.1
+exit
+
+router ospf 10
+network 192.168.66.0 0.0.0.127 area 0
+network 192.168.67.64 0.0.0.31 area 0
+
+
+
+
+%%%%%ROUTER 0%%%%%%%%%%%
+enable
+configure terminal
+interface giga 0/0
+ip add 192.168.0.1 255.255.192.0
+no shutdown
+exit
+
+interface giga 0/1
+ip add 192.168.67.66 255.255.255.224
+no shutdown
+exit
+
+router ospf 10
+network 192.168.0.0 0.0.63.255 area 0
+network 192.168.67.64 0.0.0.31 area 0
+
+
+%%%%%%%%%%SW3%%%%%%%%%%
+enable
+configure terminal
+interface range fastEthernet 0/3-24
+shutdown
+exit
+interface range fastEthernet 0/1-2
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security mac-address sticky
+switchport port-security violation shutdown
+no shutdown
+exit
+
+enable
+conf ter
+vlan 20
+name c
+vlan 21
+name d
+vlan 22
+name e
+exit
+interface vlan 20
+ip add 192.168.66.0 255.255.255.128
+no shut
+exit
+interface vlan 21
+ip add 192.168.66.128 255.255.255.128
+no shut
+exit
+interface vlan 22
+ip add 192.168.67.0 255.255.255.192
+no shut
+exit
+ip default-gateway 192.168.66.1
+
+interface fast 0/1
+switchport mode access
+switchport access vlan 20
+no shutdown
+exit
+
+interface fast 0/2
+switchport mode access
+switchport access vlan 21
+no shutdown
+
+%%%%%%%%%%SW4%%%%%%%%%%
+enable
+configure terminal
+interface range fastEthernet 0/3-24
+shutdown
+exit
+interface range fastEthernet 0/1-2
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security mac-address sticky
+switchport port-security violation shutdown
+no shutdown
+exit
+
+enable
+conf ter
+vlan 20
+name c
+vlan 21
+name d
+vlan 22
+name e
+exit
+interface vlan 20
+ip add 192.168.66.0 255.255.255.128
+no shut
+exit
+interface vlan 21
+ip add 192.168.66.128 255.255.255.128
+no shut
+exit
+interface vlan 22
+ip add 192.168.67.0 255.255.255.192
+no shut
+exit
+ip default-gateway 192.168.66.1
+
+interface fast 0/1
+switchport mode access
+switchport access vlan 20
+no shutdown
+exit
+
+interface fast 0/2
+switchport mode access
+switchport access vlan 22
+no shutdown
+
+
+ACL D:
+ip access-list standard 21
+access-list 21 permit any
+access-list 21 deny 192.168.67.0 0.0.0.255
+
+interface giga 0/1.21
+ip access-group 21 out
+
+ACL E:
+ip access-list standard 22
+access-list 22 permit any
+access-list 22 deny 192.168.66.128 0.0.0.255
+
+interface giga 0/1.22
+ip access-group 22 out
